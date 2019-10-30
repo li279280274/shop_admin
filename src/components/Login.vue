@@ -20,10 +20,10 @@
    <el-form ref="form" status-icon :model="form" :rules="rules" label-width="80px">
      <img class="logo" src="../assets/01.jpg" alt="">
         <el-form-item label="用户名" prop="username">
-          <el-input type="username" v-model="form.username"></el-input>
+          <el-input @keyup.enter.native ="login" type="username" v-model="form.username"></el-input>
         </el-form-item>
          <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="form.password"></el-input>
+          <el-input @keyup.enter.native ="login" type="password" v-model="form.password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="login" class="btn" type="primary">登录</el-button>
