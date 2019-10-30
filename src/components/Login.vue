@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   data () {
     return {
@@ -65,53 +64,52 @@ export default {
       // 希望获取到form表单组件，调用组件的重置方法（利用ref和refs）
       this.$refs.form.resetFields()
     },
-    login () {
-      // 先发送校验在发送ajax请求
-      // 参数1： 是否校验成功  布尔值
-      // 参数2： 是一个对象，包含了错误的校验字段。没用会自动提示
-      this.$refs.form.validate(isValid => {
-        // nsole.log(isValid)
-        // 如果失败直接返回
-        if (!isValid) return
-        // console.log('发送ajax请求')
-        // axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8888/api/private/v1/login',
-        //   data: this.form
-        // }).then(res => {
-        //   const { meta } = res.data
-        //   if (meta === 200) {
-        //     console.log(meta.msg)
-        //   } else {
-        //     console.log(meta.msg)
-        //   }
-        // })
-        // axios.post(url,data).then()
-        axios.post('http://localhost:8888/api/private/v1/login', this.form).then(res => {
-          const { meta, data } = res.data
-          if (meta.status === 200) {
-            // 一登录成功，就存储token令牌（字符串）到本地
-            localStorage.setItem('token', data.token)
-            this.$message({
-              message: meta.msg,
-              type: 'success',
-              duration: 1000
-            })
-            // this.$router.push('/index')
-            // 也可以这样写
-            this.$router.push({ name: 'index' })
-          } else {
-            // console.log(meta.msg)
-            // this.$message({
-            //   type: 'error',
-            //   message: meta.msg,
-            //   duration: 1000
-            // })
-            // 直接调用方法的同时，指定提示的类型
-            this.$message.error(meta.msg)
-          }
-        })
-      })
+    async login () {
+      try {
+        await this.$refs.form.validate()
+        // console.log('成功')
+        const { meta, data } = await this.$axios.post('login', this.form)
+        if (meta.status === 200) {
+          // 一登录成功，就存储token令牌（字符串）到本地
+          localStorage.setItem('token', data.token)
+          this.$message({
+            message: meta.msg,
+            type: 'success',
+            duration: 1000
+          })
+          // this.$router.push('/index')
+          // 也可以这样写
+          this.$router.push({ name: 'index' })
+        } else {
+          this.$message.error(meta.msg)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+
+      // this.$refs.form.validate(isValid => {
+      //   // nsole.log(isValid)
+      //   // 如果失败直接返回
+      //   if (!isValid) return
+      //   // axios.post(url,data).then()
+      //   this.$axios.post('login', this.form).then(res => {
+      //     const { meta, data } = res
+      //     if (meta.status === 200) {
+      //       // 一登录成功，就存储token令牌（字符串）到本地
+      //       localStorage.setItem('token', data.token)
+      //       this.$message({
+      //         message: meta.msg,
+      //         type: 'success',
+      //         duration: 1000
+      //       })
+      //       // this.$router.push('/index')
+      //       // 也可以这样写
+      //       this.$router.push({ name: 'index' })
+      //     } else {
+      //       this.$message.error(meta.msg)
+      //     }
+      //   })
+      // })
     }
   }
 }

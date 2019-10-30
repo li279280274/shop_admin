@@ -2,11 +2,29 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 import Index from '../components/Index.vue'
+import Users from '../components/Users.vue'
+import Roles from '../components/Roles.vue'
+import Rights from '../components/Rights.vue'
+
 Vue.use(VueRouter)
+
+const originalpush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalpush.call(this, location).catch(err => err)
+}
 
 const routes = [
   { path: '/', redirect: '/index' },
-  { path: '/index', component: Index, name: 'index' },
+  {
+    path: '/index',
+    component: Index,
+    name: 'index',
+    children: [
+      { path: '/users', component: Users },
+      { path: '/roles', component: Roles },
+      { path: '/rights', component: Rights }
+    ]
+  },
   { path: '/login', component: Login }
 ]
 
