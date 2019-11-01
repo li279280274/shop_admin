@@ -23,32 +23,33 @@
            -->
             <el-menu
             router
+            :default-active="defaultActive"
             unique-opened
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b">
 
               <!-- 导航一 -->
-            <el-submenu index="1">
+            <el-submenu :index="men.path" v-for="men in menuList" :key="men.id">
               <template v-slot:title>
                 <i class="el-icon-location"></i>
-                <span>用户管理</span>
+                <span>{{men.authName}}</span>
               </template>
-              <!-- 内容 -->
+              <!-- 展开的内容 -->
               <!-- 解析时，会将配置的路径，当成绝对路径使用，写的是users=》/users -->
-                <el-menu-item index="users">
+                <el-menu-item :index="item.path" v-for="item in men.children" :key="item.id">
                   <i class="el-icon-menu"></i>
-                  <span slot="title">用户列表</span>
+                  <span slot="title">{{ item.authName}}</span>
                 </el-menu-item>
             </el-submenu>
-             <el-submenu index="2">
-              <!-- 导航一 -->
-              <template v-slot:title>
+             <!-- <el-submenu index="2"> -->
+               <!-- 导航一  -->
+               <!-- <template v-slot:title>
                 <i class="el-icon-location"></i>
                 <span>权限管理</span>
-              </template>
-              <!-- 内容 -->
-                <el-menu-item index="roles">
+              </template> -->
+               <!-- 内容 -->
+                <!-- <el-menu-item index="roles">
                   <i class="el-icon-menu"></i>
                   <span slot="title">角色列表</span>
                 </el-menu-item>
@@ -56,7 +57,7 @@
                   <i class="el-icon-menu"></i>
                   <span slot="title">权限列表</span>
                 </el-menu-item>
-            </el-submenu>
+            </el-submenu>  -->
           </el-menu>
 
         </el-aside>
@@ -70,6 +71,29 @@
 
 <script>
 export default {
+  // 计算属性
+  computed: {
+    defaultActive () {
+      // this.$route  拿到当前路由的相关信息对象（路径，参数）
+      // this.$router 拿到整个路由实例
+      // slice 从开始截取，包括开始，不包括结束
+      return this.$route.path.slice(1)
+    }
+  },
+  data () {
+    return {
+      menuList: []
+    }
+  },
+  async created () {
+    const { data, meta } = await this.$axios.get('menus')
+    if (meta.status === 200) {
+      this.menuList = data
+      console.log(this.menuList)
+    } else {
+      this.$message.error(meta.msg)
+    }
+  },
   methods: {
     logouts () {
       this.$confirm('亲，你确认要退出吗!', '温馨提示', {
