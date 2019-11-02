@@ -77,7 +77,7 @@ export default {
       // this.$route  拿到当前路由的相关信息对象（路径，参数）
       // this.$router 拿到整个路由实例
       // slice 从开始截取，包括开始，不包括结束
-      return this.$route.path.slice(1)
+      return this.$route.path.slice(1).split('-')[0]
     }
   },
   data () {

@@ -117,8 +117,8 @@ export default {
       if (meta.status === 200) {
         this.categoryList = data.result
         this.total = data.total
-        console.log(this.categoryList)
-        console.log(this.total)
+        // console.log(this.categoryList)
+        // console.log(this.total)
       } else {
         this.$message.error(meta.msg)
       }
